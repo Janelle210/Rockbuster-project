@@ -1,0 +1,167 @@
+--Top 10 Films by Revenue		
+SELECT f.film_id,		
+	   f.title,	
+	   f.rating,	
+	   sum (p.amount) AS total_payment	
+FROM film f 		
+INNER JOIN inventory i ON i.film_id = f.film_id		
+INNER JOIN rental r ON r.inventory_id = i.inventory_id		
+INNER JOIN payment p ON p.rental_id = r.rental_id		
+GROUP BY f.title, 		
+	f.film_id,	 
+	 f.rating	
+ORDER BY total_payment DESC		
+LIMIT 10		
+
+
+--Bottom 10 Films by Revenue		
+SELECT f.film_id,		
+	   f.title,	
+	   f.rating,	
+	   sum (p.amount) AS total_payment	
+FROM film f 		
+INNER JOIN inventory i ON i.film_id = f.film_id		
+INNER JOIN rental r ON r.inventory_id = i.inventory_id		
+INNER JOIN payment p ON p.rental_id = r.rental_id		
+GROUP BY f.title, 		
+	 f.film_id,	
+	f.rating	 
+ORDER BY total_payment ASC		
+LIMIT 10		
+
+
+--Top 10 Countries by Customer Count	
+SELECT o.country,	
+	   COUNT (c.customer_id) AS "customer count"
+FROM customer c	
+INNER JOIN address a ON a.address_id = c.address_id	
+INNER JOIN city i ON i.city_id = a.city_id	
+INNER JOIN country o ON o.country_id = i.country_id	
+GROUP BY o.country	
+ORDER BY COUNT(c.customer_id) DESC	
+LIMIT 10	
+
+
+--Top 10 Cities by Customer Count	
+SELECT o.country,	
+	   i.city,
+	   COUNT (c.customer_id) AS "customer count"
+FROM customer c	
+INNER JOIN address a ON a.address_id = c.address_id	
+INNER JOIN city i ON i.city_id = a.city_id	
+INNER JOIN country o ON o.country_id = i.country_id	
+WHERE o.country IN ('India', 'China', 'United States', 'Japan', 'Mexico', 'Brazil', 'Russian Federation', 'Philippines', 'Turkey', 'Indonesia')	
+GROUP BY o.country,	
+         i.city	
+ORDER BY COUNT(c.customer_id) DESC	
+LIMIT 10	
+
+
+--Top 5 Customers in Top 10 Cities	
+SELECT SUM (p.amount) AS "payment total",	
+	   c.customer_id,
+	   c.first_name,
+	   c.last_name,
+	   c.email,
+	   i.city,
+	   o.country
+FROM payment p	
+INNER JOIN customer c ON c.customer_id = p.customer_id	
+INNER JOIN address a ON a.address_id = c.address_id	
+INNER JOIN city i ON i.city_id = a.city_id	
+INNER JOIN country o ON o.country_id = i.country_id	
+WHERE i.city IN ('Aurora', 'Acua', 'Citrus Heights', 'Iwaki', 'Ambattur', 'Shanwei', 'So Leopoldo', 'Teboksary', 'Tianjin', 'Cianjur')	
+GROUP BY c.customer_id,	
+	     c.first_name,
+	     c.last_name,
+	     c.email,
+	     i.city,
+	     o.country
+ORDER BY SUM (p.amount) DESC	
+LIMIT 5	
+
+
+--Film Table (Min, Max, avg, Mode)										
+SELECT MODE() WITHIN GROUP (ORDER BY release_year) AS "mode release year",										
+	   MODE() WITHIN GROUP (ORDER BY l.name) AS "mode language",									
+	   MODE() WITHIN GROUP (ORDER BY rating) AS "mode rating",									
+	   MODE() WITHIN GROUP (ORDER BY special_features) AS "mode special features",									
+	   MIN (rental_duration) AS "min rental duration", MAX (rental_duration) AS "max rental duration", AVG (rental_duration) AS "average rental duration",									
+	   MIN (rental_rate) AS "min rental rate", MAX (rental_rate) AS "max rental rate", AVG (rental_rate) AS "average rental rate",				  					
+	   MIN (length) AS "min length", MAX (length) AS "max length", AVG (length) AS "average length",									
+	   MIN (replacement_cost) AS "min replacement cost", MAX (replacement_cost) AS "max replacement cost", AVG (replacement_cost) AS "average replacement cost"									
+FROM film f										
+INNER JOIN language l ON l.language_id = f.language_id										
+
+
+--Customer Table (Min, Max, Average, Mode)				
+SELECT MODE() WITHIN GROUP (ORDER BY activebool) AS "mode active bool",				
+	   MODE() WITHIN GROUP (ORDER BY active) AS "mode active",			
+	   MODE() WITHIN GROUP (ORDER BY store_id) AS "mode store ID",			
+	   MODE() WITHIN GROUP (ORDER BY create_date) AS "mode creation date",			
+	   MIN (store_id) AS "min store ID", MAX (store_id) AS "max store ID", 			
+	   MIN (address_id) AS "min address ID", MAX (address_id) AS "max address ID",			
+	   MODE() WITHIN GROUP (ORDER BY address_id) AS "mode address ID"			
+FROM customer				
+
+
+-- customer count and total payment received against each country
+SELECT country,
+       COUNT(DISTINCT A.customer_id) AS customer_count,
+       SUM(amount) AS total_payment
+FROM customer A
+INNER JOIN address B ON A.address_id = B.address_id
+INNER JOIN city C ON B.city_id = C.city_id
+INNER JOIN country D ON C.country_ID = D.country_ID
+INNER JOIN payment E ON a.customer_id = E.customer_id
+GROUP BY country
+
+
+--rating revenue
+SELECT 	f.rating,
+	SUM(p.amount)
+FROM payment p	
+INNER JOIN rental r ON r.rental_id = p.rental_id	
+INNER JOIN inventory i ON i.inventory_id = r.inventory_id	
+INNER JOIN film f ON f.film_id = i.film_id	
+GROUP BY f.rating	
+ORDER BY SUM(p.amount) DESC	
+
+
+--genre revenue
+SELECT 	c.name,
+	SUM(p.amount)
+FROM payment p	
+INNER JOIN rental r ON r.rental_id = p.rental_id	
+INNER JOIN inventory i ON i.inventory_id = r.inventory_id	
+INNER JOIN film f ON f.film_id = i.film_id	
+INNER JOIN film_category fc ON fc.film_id = f.film_id	
+INNER JOIN category c ON c.category_id = fc.category_id	
+GROUP BY c.name	
+ORDER BY SUM(p.amount) DESC	
+
+
+--store revenue
+SELECT 	s.store_id,
+	SUM(p.amount)
+FROM payment p	
+INNER JOIN staff st ON st.staff_id = p.staff_id	
+INNER JOIN store s ON s.store_id = st.store_id	
+GROUP BY s.store_id	
+ORDER BY SUM(p.amount) DESC	
+
+
+--movie count
+SELECT COUNT (DISTINCT film_id)
+FROM film
+
+
+--country count
+SELECT COUNT (DISTINCT country_id)
+FROM country
+
+
+--active customer count
+SELECT COUNT (DISTINCT customer_id)
+FROM customer
+WHERE active = '1'
