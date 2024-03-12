@@ -12,3 +12,6 @@ launch an online video rental service in order to stay competitive.
 
 <h1>Project Brief</h1>
 <a href="https://github.com/Janelle210/Rockbuster-project/blob/main/A3_Data_Project_Brief%20.pdf">Rockbuster Project Brief</a>
+
+<h1>SQL Queries</h1>
+<a href="https://github.com/Janelle210/Rockbuster-project/blob/main/SQL%20Queries">Rockbuster SQL Queries</a>
