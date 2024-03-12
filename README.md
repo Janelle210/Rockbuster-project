@@ -9,3 +9,6 @@ launch an online video rental service in order to stay competitive.
 <a href="http://www.postgresqltutorial.com/wp-content/uploads/2019/05/dvdrental.zip">Link</a>
 <h1>Presentation in Google Slides</h1>
 <a href="https://docs.google.com/presentation/d/1wGFyzOb9t4XTIo1-KZ_fDW5Q2f4U3ZU0a7CBDZ95nf4/edit?usp=sharing">Rockbuster Project</a>
+
+<h1>Project Brief</h1>
+<a href="https://github.com/Janelle210/Rockbuster-project/blob/main/A3_Data_Project_Brief%20.pdf">Rockbuster Project Brief</a>
